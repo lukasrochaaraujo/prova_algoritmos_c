@@ -36,6 +36,8 @@ struct Consulta
 };
 
 //declaracoes de funcoes
+void Menu();
+
 void CadastrarMedico();
 void ConsultarMedico();
 void ExibirMedico(struct Medico medico);
@@ -53,6 +55,14 @@ struct Paciente matriz_paciente[MAXIMO_PACIENTES];
 int main()
 {
     printf("\n[BEM VINDO]\n\n");
+
+    Menu();
+
+    return 0;
+}
+
+void Menu()
+{
     for(;;)
     {
         int opcao_menu;
@@ -84,7 +94,7 @@ int main()
                 break;
             case OPCAO_SAIR:
                 printf("\n[ATE LOGO]\n\n");
-                return 0;
+                return;
         }
 
         printf("\n[TECLE ALGO PARA VOLTAR AO MENU]");
@@ -92,10 +102,7 @@ int main()
 
         LimparTela();
     }
-
-    return 0;
 }
-
 
 void CadastrarMedico()
 {
