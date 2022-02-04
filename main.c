@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAXIMO_CADASTRO 1000
+#define MAXIMO_MEDICOS 3
+#define MAXIMO_PACIENTES 5
 #define OPCAO_SAIR 0
 #define OPCAO_MEDICO_CADASTRAR 1
 #define OPCAO_MEDICO_CONSULTAR 2
@@ -46,8 +47,8 @@ void ExibirPaciente(struct Paciente paciente);
 void LimparTela();
 
 //variaveis globais
-struct Medico matriz_medico[MAXIMO_CADASTRO];
-struct Paciente matriz_paciente[MAXIMO_CADASTRO];
+struct Medico matriz_medico[MAXIMO_MEDICOS];
+struct Paciente matriz_paciente[MAXIMO_PACIENTES];
 
 int main()
 {
@@ -105,9 +106,9 @@ void CadastrarMedico()
     scanf("%d", &novoMedico.Codigo);
     getchar();
 
-    if (novoMedico.Codigo == 0 || novoMedico.Codigo > MAXIMO_CADASTRO)
+    if (novoMedico.Codigo == 0 || novoMedico.Codigo > MAXIMO_MEDICOS)
     {
-        printf("\n[INSIRA UM CODIGO ENTRE 1-%d]\n", MAXIMO_CADASTRO);
+        printf("\n[INSIRA UM CODIGO ENTRE 1-%d]\n", MAXIMO_MEDICOS);
         return;
     }
 
@@ -172,7 +173,7 @@ void ConsultarMedico()
         if (respostaListarTudo == 'S' || respostaListarTudo == 's')
         {
             printf("\n[MEDICOS CADASTRADOS]\n\n");
-            for(int codigo = 0; codigo < MAXIMO_CADASTRO; codigo++)
+            for(int codigo = 0; codigo < MAXIMO_MEDICOS; codigo++)
             {
                 struct Medico medicoBusca;
                 medicoBusca = matriz_medico[codigo];
@@ -204,9 +205,9 @@ void CadastrarPaciente()
     scanf("%d", &novoPaciente.Codigo);
     getchar();
 
-    if (novoPaciente.Codigo == 0 || novoPaciente.Codigo > MAXIMO_CADASTRO)
+    if (novoPaciente.Codigo == 0 || novoPaciente.Codigo > MAXIMO_PACIENTES)
     {
-        printf("\n[INSIRA UM CODIGO ENTRE 1-%d]\n", MAXIMO_CADASTRO);
+        printf("\n[INSIRA UM CODIGO ENTRE 1-%d]\n", MAXIMO_PACIENTES);
         return;
     }
 
@@ -271,7 +272,7 @@ void ConsultarPaciente()
         if (respostaListarTudo == 'S' || respostaListarTudo == 's')
         {
             printf("\n[PACIENTES CADASTRADOS]\n\n");
-            for(int codigo = 0; codigo < MAXIMO_CADASTRO; codigo++)
+            for(int codigo = 0; codigo < MAXIMO_PACIENTES; codigo++)
             {
                 struct Paciente pacienteBusca;
                 pacienteBusca = matriz_paciente[codigo];
