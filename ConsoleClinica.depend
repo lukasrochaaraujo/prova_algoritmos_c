@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1644000606 source:c:\users\lukas\projetos\consoleclinica\main.c
+	<stdio.h>
+	<stdlib.h>
+
