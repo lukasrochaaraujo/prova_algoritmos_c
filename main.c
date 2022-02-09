@@ -212,8 +212,17 @@ void CadastrarConsulta()
     gets(horarioConsulta);
     LimparTela();
 
-    int codigoMedico = SelecionarMedico();
-    LimparTela();
+    int codigoMedico;
+    int medicoDisponivel;
+
+    do
+    {
+        codigoMedico = SelecionarMedico();
+        LimparTela();
+
+        medicoDisponivel = MedicoEstaDisponivel(diaConsulta, codigoMedico);
+    }
+    while(medicoDisponivel < 0);
 
     int codigoPaciente = SelecionarPaciente();
     LimparTela();
@@ -293,6 +302,32 @@ int SelecionarMedico()
     printf("\n");
 
     return codigoMedicoSelecionado;
+}
+
+int MedicoEstaDisponivel(int diaConsulta, int codigoMedico)
+{
+    int maximoConsultasPorDia = MAXIMO_MEDICOS * MAXIMO_CONSULTA_DIA_POR_MEDICO + 1;
+    int quantidadeConsultasMedido = 0;
+
+    for (int codigoConsulta = 0; codigoConsulta < maximoConsultasPorDia; codigoConsulta++)
+    {
+        struct Consulta consulta = matriz_consulta[diaConsulta][codigoConsulta];
+
+        if (consulta.Codigo > 0 && consulta.CodigoMedico == codigoMedico)
+        {
+            quantidadeConsultasMedido++;
+        }
+    }
+
+    if (quantidadeConsultasMedido == 2)
+    {
+        printf("\nMEDICO COM AGENDA LOTADA!");
+        getchar();
+        LimparTela();
+        return -1;
+    }
+
+    return 1;
 }
 
 int SelecionarPaciente()
