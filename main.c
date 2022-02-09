@@ -46,7 +46,7 @@ void CadastrarMedico();
 void CadastrarPaciente();
 void CadastrarConsulta();
 void PesquisarConsulta();
-int SelecionarDiaConsulta();
+int SelecionarDiaDaSemana();
 int SelecionarMedico();
 int SelecionarPaciente();
 void ExibirConsulta(struct Consulta consulta);
@@ -204,7 +204,7 @@ void CadastrarConsulta()
 {
     printf("\n[CADASTRAR CONSULTA]\n\n");
 
-    int diaConsulta = SelecionarDiaConsulta();
+    int diaConsulta = SelecionarDiaDaSemana();
     LimparTela();
 
     char horarioConsulta[10];
@@ -259,7 +259,7 @@ void CadastrarConsulta()
     ExibirConsulta(novaConsulta);
 }
 
-int SelecionarDiaConsulta()
+int SelecionarDiaDaSemana()
 {
     printf("SELECIONE UM DIA DA SEMANA:\n\n");
 
@@ -358,7 +358,48 @@ int SelecionarPaciente()
 
 void PesquisarConsulta()
 {
+    int maximoConsultasPorDia = (MAXIMO_MEDICOS * MAXIMO_CONSULTA_DIA_POR_MEDICO + 1);
+    int diaDaSemana = SelecionarDiaDaSemana();
+    LimparTela();
 
+    printf("CONSULTAS MARCADAS: %s\n\n", matriz_dia_semana[diaDaSemana]);
+
+    for(int codigoConsulta = 1; codigoConsulta <= maximoConsultasPorDia; codigoConsulta++)
+    {
+        struct Consulta consulta = matriz_consulta[diaDaSemana][codigoConsulta];
+
+        if(consulta.Codigo > 0)
+        {
+            ExibirConsulta(consulta);
+            printf("......................................\n");
+        }
+    }
+
+    printf("FILTRAR POR MEDICO (s/n)? ");
+    char respostaFiltarPorMedico = 'n';
+    scanf("%s", &respostaFiltarPorMedico);
+
+    if (respostaFiltarPorMedico == 's' || respostaFiltarPorMedico == 'S')
+    {
+        LimparTela();
+        int codigoMedico = SelecionarMedico();
+        struct Medico medico = matriz_medico[codigoMedico];
+        LimparTela();
+
+        printf("CONSULTAS MARCADAS: %s\n", matriz_dia_semana[diaDaSemana]);
+        printf("MEDICO: %s\n\n", medico.Nome);
+
+        for(int codigoConsulta = 1; codigoConsulta <= maximoConsultasPorDia; codigoConsulta++)
+        {
+            struct Consulta consulta = matriz_consulta[diaDaSemana][codigoConsulta];
+
+            if(consulta.Codigo > 0 && consulta.CodigoMedico == codigoMedico)
+            {
+                ExibirConsulta(consulta);
+                printf("......................................\n");
+            }
+        }
+    }
 }
 
 void ExibirConsulta(struct Consulta consulta)
