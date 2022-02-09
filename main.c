@@ -375,7 +375,7 @@ void PesquisarConsulta()
         }
     }
 
-    printf("FILTRAR POR MEDICO (s/n)? ");
+    printf("\nFILTRAR POR MEDICO (s/n)? ");
     char respostaFiltarPorMedico = 'n';
     scanf("%s", &respostaFiltarPorMedico);
 
