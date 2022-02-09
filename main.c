@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAXIMO_DIAS_SEMANA 5
 #define MAXIMO_CONSULTA_DIA_POR_MEDICO 2
@@ -34,30 +35,33 @@ struct Consulta
     int Codigo;
     int CodigoMedico;
     int CodigoPaciente;
-    char DiaSemana[3];
-    char Hora[5];
+    int DiaSemana;
+    char Hora[10];
 };
 
 //declaracoes de funcoes
 void ConfigurarMatrizDiasSenama();
 void Menu();
-
 void CadastrarMedico();
-void ExibirMedico(struct Medico medico);
-
 void CadastrarPaciente();
-void ExibirPaciente(struct Paciente paciente);
-
 void CadastrarConsulta();
 void PesquisarConsulta();
+int SelecionarDiaConsulta();
+int SelecionarMedico();
+int SelecionarPaciente();
 void ExibirConsulta(struct Consulta consulta);
-
 void LimparTela();
 
 //variaveis globais
 struct Medico matriz_medico[MAXIMO_MEDICOS + 1];
 struct Paciente matriz_paciente[MAXIMO_PACIENTES + 1];
-struct Consulta matriz_consulta[MAXIMO_DIAS_SEMANA][MAXIMO_MEDICOS * MAXIMO_CONSULTA_DIA_POR_MEDICO];
+
+struct Consulta matriz_consulta[MAXIMO_DIAS_SEMANA][MAXIMO_MEDICOS * MAXIMO_CONSULTA_DIA_POR_MEDICO + 1];
+static int ControleCodigoConsultaSeg = 1;
+static int ControleCodigoConsultaTer = 1;
+static int ControleCodigoConsultaQua = 1;
+static int ControleCodigoConsultaQui = 1;
+static int ControleCodigoConsultaSex = 1;
 char* matriz_dia_semana[5];
 
 int main()
@@ -200,8 +204,55 @@ void CadastrarConsulta()
 {
     printf("\n[CADASTRAR CONSULTA]\n\n");
 
-    //selecao dia semana
-    printf("\n[SELECIONE UM DIA DA SEMANA]\n\n");
+    int diaConsulta = SelecionarDiaConsulta();
+    LimparTela();
+
+    char horarioConsulta[10];
+    printf("\nINFORME O HORARIO DA CONSULTA (00:00): ");
+    gets(horarioConsulta);
+    LimparTela();
+
+    int codigoMedico = SelecionarMedico();
+    LimparTela();
+
+    int codigoPaciente = SelecionarPaciente();
+    LimparTela();
+
+    struct Consulta novaConsulta;
+    novaConsulta.DiaSemana = diaConsulta;
+    strcpy(novaConsulta.Hora, horarioConsulta);
+    novaConsulta.CodigoMedico = codigoMedico;
+    novaConsulta.CodigoPaciente = codigoPaciente;
+
+    switch(novaConsulta.DiaSemana)
+    {
+        case 0:
+            novaConsulta.Codigo = ControleCodigoConsultaSeg++;
+            break;
+        case 1:
+            novaConsulta.Codigo = ControleCodigoConsultaTer++;
+            break;
+        case 2:
+            novaConsulta.Codigo = ControleCodigoConsultaQua++;
+            break;
+        case 3:
+            novaConsulta.Codigo = ControleCodigoConsultaQui++;
+            break;
+        case 4:
+            novaConsulta.Codigo = ControleCodigoConsultaSex++;
+            break;
+    }
+
+    matriz_consulta[novaConsulta.DiaSemana][novaConsulta.Codigo] = novaConsulta;
+
+    LimparTela();
+    printf("CONSULTA CADASTRADA:\n");
+    ExibirConsulta(novaConsulta);
+}
+
+int SelecionarDiaConsulta()
+{
+    printf("SELECIONE UM DIA DA SEMANA:\n\n");
 
     for(int diaSemana = 0; diaSemana < 5; diaSemana++)
         printf("[%d]-%s  ", diaSemana, matriz_dia_semana[diaSemana]);
@@ -213,17 +264,61 @@ void CadastrarConsulta()
     scanf("%d", &diaSemana);
     getchar();
 
-    printf("\n[DIA SELECIONADO] - [%s]\n", matriz_dia_semana[diaSemana]);
+    printf("\nDIA SELECIONADO: [%s]\n", matriz_dia_semana[diaSemana]);
 
-    //selecao medico (lembrar limite consultas/dia)
-    printf("\n[SELECIONE UM MEDICO]\n");
+    return diaSemana;
+}
+
+int SelecionarMedico()
+{
+    int codigoMedicoSelecionado;
+
+    printf("SELECIONE UM MEDICO\n\n");
+
+    for(int codigoMedico = 1; codigoMedico <= MAXIMO_MEDICOS; codigoMedico++)
+    {
+        struct Medico medico = matriz_medico[codigoMedico];
+        if (medico.Codigo > 0)
+        {
+            printf("COD..: %d\n", medico.Codigo);
+            printf("NOME.: %s\n", medico.Nome);
+            printf("--------------------------\n");
+        }
+    }
+
+    printf("\nCOD MEDICO: ");
+    scanf("%d", &codigoMedicoSelecionado);
     getchar();
 
-    //selcao paciente
-    printf("\n[SELECIONE UM PACIENTE]\n");
+    printf("\n");
+
+    return codigoMedicoSelecionado;
+}
+
+int SelecionarPaciente()
+{
+    int codigoPacienteSelecionado;
+
+    printf("SELECIONE UM PACIENTE\n\n");
+
+    for(int codigoPaciente = 1; codigoPaciente <= MAXIMO_PACIENTES; codigoPaciente++)
+    {
+        struct Paciente paciente = matriz_paciente[codigoPaciente];
+        if (paciente.Codigo > 0)
+        {
+            printf("COD..: %d\n", paciente.Codigo);
+            printf("NOME.: %s\n", paciente.Nome);
+            printf("--------------------------\n");
+        }
+    }
+
+    printf("\nCOD PACIENTE: ");
+    scanf("%d", &codigoPacienteSelecionado);
     getchar();
 
-    //registrar consulta
+    printf("\n");
+
+    return codigoPacienteSelecionado;
 }
 
 void PesquisarConsulta()
@@ -233,11 +328,15 @@ void PesquisarConsulta()
 
 void ExibirConsulta(struct Consulta consulta)
 {
-    printf("CODIGO.....: %d \n", consulta.Codigo);
-    printf("DIA SEMANA.: %s \n", consulta.DiaSemana);
-    printf("HORARIO....: %s \n", consulta.Hora);
-    printf("MEDICO.....: %d \n", consulta.CodigoMedico);
-    printf("PACIENTE...: %d \n", consulta.CodigoPaciente);
+    printf("COD........: %d\n", consulta.Codigo);
+    printf("DIA........: %s\n", matriz_dia_semana[consulta.DiaSemana]);
+    printf("HORA.......: %s\n", consulta.Hora);
+
+    struct Medico medico = matriz_medico[consulta.CodigoMedico];
+    printf("MEDICO.....: %s\n", medico.Nome);
+
+    struct Paciente paciente = matriz_paciente[consulta.CodigoPaciente];
+    printf("PACIENTE...: %s\n", paciente.Nome);
 }
 
 void LimparTela()
